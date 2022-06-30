@@ -1,0 +1,6 @@
+(library
+ (name hackmd_api)
+ (public_name hackmd-api)
+ (preprocess (pps ppx_deriving.show))
+ (libraries yojson httpaf cohttp cohttp-lwt-unix lwt))
+

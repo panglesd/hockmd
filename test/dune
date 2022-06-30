@@ -1,0 +1,5 @@
+(tests
+ (names hackmd_api_test)
+ (package hackmd-api)
+ (libraries alcotest ; hackmd_api
+))
