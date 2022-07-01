@@ -1,15 +1,14 @@
 (** A wrapper around hackmd api *)
 
-type error
-
 open Types_and_parser.V1
 
 module V1 : sig
   type token
+  type error = Cohttp_lwt_unix.Response.t * Cohttp_lwt.Body.t
 
   val token_of_string : string -> token
   val user : token -> (user, error) result Lwt.t
-  val note : token -> string -> (note, error) result Lwt.t
+  val note : token -> note_id -> (note, error) result Lwt.t
   val notes : token -> (note_summary list, error) result Lwt.t
   val teams : token -> (team list, error) result Lwt.t
   val team_notes : token -> team_path -> (note list, error) result Lwt.t

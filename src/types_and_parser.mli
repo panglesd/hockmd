@@ -9,7 +9,7 @@ module V1 : sig
   type team = {
     id : team_id;
     ownerId : user_id;
-    path : string;
+    path : team_path;
     name : string;
     logo : string;
     description : string;

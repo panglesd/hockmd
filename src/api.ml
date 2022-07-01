@@ -3,13 +3,12 @@ open Cohttp
 open Cohttp_lwt_unix
 open Utils
 
-type error = Cohttp_lwt_unix.Response.t * Cohttp_lwt.Body.t
-
 module V1 = struct
   open Types_and_parser.V1
   open Combined_syntax
 
   type token = string
+  type error = Cohttp_lwt_unix.Response.t * Cohttp_lwt.Body.t
 
   let token_of_string = Fun.id
 
@@ -63,7 +62,8 @@ module V1 = struct
     body |> Yojson.Safe.Util.to_list |> List.map note_summary_of_yojson
 
   let note token note_id =
-    let++ body = get ("note/" ^ note_id) token in
+    let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
+    let++ body = get url token in
     note_of_yojson body
 
   let teams token =
