@@ -14,6 +14,9 @@ depends: [
   "cohttp"
   "cohttp-lwt-unix"
   "lwt"
+  "ppx_deriving"
+  "yojson"
+  "ppx_yojson_conv"
   "alcotest" {with-test}
   "odoc" {with-doc}
 ]

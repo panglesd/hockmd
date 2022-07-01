@@ -9,11 +9,9 @@
 
 (license ISC)
 
-(authors
-  "Paul-Elliot Anglès d'Auriac <peada@free.fr>")
+(authors "Paul-Elliot Anglès d'Auriac <peada@free.fr>")
 
-(maintainers
-  "Paul-Elliot Anglès d'Auriac <peada@free.fr>")
+(maintainers "Paul-Elliot Anglès d'Auriac <peada@free.fr>")
 
 (generate_opam_files true)
 
@@ -22,10 +20,14 @@
  (synopsis "A wrapper around hackmd api")
  (description "A wrapper around hackmd api")
  (depends
-  (ocaml (>= 4.08.0))
+  (ocaml
+   (>= 4.08.0))
   dune
   cohttp
   cohttp-lwt-unix
   lwt
+  ppx_deriving
+  yojson
+  ppx_yojson_conv
   (alcotest :with-test)
   (odoc :with-doc)))
