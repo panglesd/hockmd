@@ -1,36 +1,96 @@
 (** A wrapper around hackmd api *)
 
-type error
-
-open Types_and_parser.V1
-
 module V1 : sig
-  type token
+  module Types : sig
+    type user_id
+    type team_id
+    type user_path
+    type team_path
 
-  val token_of_string : string -> token
-  val user : token -> (user, error) result Lwt.t
-  val note : token -> string -> (note, error) result Lwt.t
-  val notes : token -> (note_summary list, error) result Lwt.t
-  val teams : token -> (team list, error) result Lwt.t
-  val team_notes : token -> team_path -> (note list, error) result Lwt.t
-  val create_note : token -> new_note option -> (note, error) result Lwt.t
+    type team = {
+      id : team_id;
+      ownerId : user_id;
+      path : string;
+      name : string;
+      logo : string;
+      description : string;
+      visibility : string;
+      createdAt : int;
+    }
 
-  val update_note :
-    token -> note_id -> update_note option -> (string, error) result Lwt.t
+    type user = {
+      id : user_id;
+      name : string;
+      email : string option;
+      userPath : string;
+      photo : string;
+      teams : team list;
+    }
 
-  val delete_note : token -> note_id -> (string, error) result Lwt.t
-  val history : token -> (note_summary list, error) result Lwt.t
+    type note_id
+    type publish_type = string (* View, ... *)
+    type rw_permission = Owner | Signed_in | Guest
 
-  val create_note_in_team :
-    token -> team_path -> new_note option -> (note, error) result Lwt.t
+    type comment_permission =
+      | Disabled
+      | Forbidden
+      | Owners
+      | Signed_in_users
+      | Everyone
 
-  val update_note_in_team :
-    token ->
-    team_path ->
-    note_id ->
-    update_note option ->
-    (string, error) result Lwt.t
+    type change_user = {
+      name : string;
+      photo : string;
+      biography : string option;
+      userPath : user_path;
+    }
 
-  val delete_note_in_team :
-    token -> team_path -> note_id -> (string, error) result Lwt.t
+    type note_summary = {
+      id : note_id;
+      title : string;
+      tags : string list;
+      createdAt : int;
+      publishType : publish_type;
+      publishedAt : int option;
+      permalink : string option;
+      shortId : string;
+      lastChangedAt : int;
+      lastChangeUser : change_user option;
+      userPath : user_path;
+      teamPath : team_path option;
+      readPermission : rw_permission;
+      writePermission : rw_permission;
+    }
+
+    type note = {
+      id : note_id;
+      title : string;
+      tags : string list;
+      createdAt : int;
+      publishType : publish_type;
+      publishedAt : int option;
+      permalink : string option;
+      shortId : string;
+      content : string;
+      lastChangedAt : int;
+      lastChangeUser : change_user option;
+      userPath : user_path;
+      teamPath : team_path option;
+      readPermission : rw_permission;
+      writePermission : rw_permission;
+    }
+
+    type new_note = {
+      title : string;
+      content : string;
+      readPermission : rw_permission;
+      writePermission : rw_permission;
+      commentPermission : comment_permission;
+    }
+
+    type update_note = { content : string; readPermission : rw_permission }
+  end
+
+  include module type of Api.V1
+  (** @inline *)
 end

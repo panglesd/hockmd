@@ -1,0 +1,122 @@
+open Lwt
+open Cohttp
+open Cohttp_lwt_unix
+open Utils
+
+type error = Cohttp_lwt_unix.Response.t * Cohttp_lwt.Body.t
+
+module V1 = struct
+  open Types_and_parser.V1
+  open Combined_syntax
+
+  type token = string
+
+  let token_of_string = Fun.id
+
+  let get url token =
+    let headers =
+      Header.init () |> fun header ->
+      Header.add header "Authorization" @@ "Bearer " ^ token
+    in
+    let uri = Uri.of_string ("https://api.hackmd.io/v1/" ^ url) in
+    Client.get ~headers uri >>= fun (resp, body) ->
+    let code = resp |> Response.status |> Code.code_of_status in
+    if code != 200 then Lwt.return @@ Error (resp, body)
+    else
+      body |> Cohttp_lwt.Body.to_string >|= Yojson.Safe.from_string
+      >|= Result.ok
+
+  let update
+      (f :
+        ?ctx:Net.ctx ->
+        ?body:Cohttp_lwt.Body.t ->
+        ?chunked:bool ->
+        ?headers:Header.t ->
+        'a ->
+        'b) g expected_code url body token =
+    let headers =
+      let add a b h = Header.add h a b in
+      Header.init ()
+      |> add "Authorization" @@ "Bearer " ^ token
+      |> add "Content-Type" "application/json"
+    in
+    let uri = Uri.of_string ("https://api.hackmd.io/v1/" ^ url) in
+    let body =
+      let ( >>| ) a b = Option.map b a in
+      body >>| Yojson.Safe.to_string >>| Cohttp_lwt.Body.of_string
+    in
+    f ?body ~headers uri >>= fun (resp, body) ->
+    let code = resp |> Response.status |> Code.code_of_status in
+    if code != expected_code then Lwt.return @@ Error (resp, body)
+    else body |> Cohttp_lwt.Body.to_string >|= g >|= Result.ok
+
+  let post = update Client.post Yojson.Safe.from_string 201
+  let patch = update Client.patch Fun.id 202
+  let delete = update Client.delete Fun.id 204
+
+  let user token =
+    let++ body = get "me" token in
+    user_of_yojson body
+
+  let notes token =
+    let++ body = get "notes" token in
+    body |> Yojson.Safe.Util.to_list |> List.map note_summary_of_yojson
+
+  let note token note_id =
+    let++ body = get ("note/" ^ note_id) token in
+    note_of_yojson body
+
+  let teams token =
+    let++ body = get "teams" token in
+    body |> Yojson.Safe.Util.to_list |> List.map team_of_yojson
+
+  let team_notes token team_path =
+    let url = Format.sprintf "teams/%s/notes" (string_of_team_path team_path) in
+    let++ body = get url token in
+    body |> Yojson.Safe.Util.to_list |> List.map note_of_yojson
+
+  let create_note token new_note =
+    let body = Option.map yojson_of_new_note new_note in
+    let++ answer = post "notes" body token in
+    note_of_yojson answer
+
+  let update_note token note_id update_note =
+    let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
+    let body = Option.map yojson_of_update_note update_note in
+    let++ answer = patch url body token in
+    answer
+
+  let delete_note token note_id =
+    let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
+    let++ answer = delete url None token in
+    answer
+
+  let history token =
+    let++ body = get "history" token in
+    body |> Yojson.Safe.Util.to_list |> List.map note_summary_of_yojson
+
+  let create_note_in_team token team_path new_note =
+    let url = Format.sprintf "teams/%s/notes" (string_of_team_path team_path) in
+    let body = Option.map yojson_of_new_note new_note in
+    let++ answer = post url body token in
+    note_of_yojson answer
+
+  let update_note_in_team token team_path note_id update_note =
+    let url =
+      Format.sprintf "teams/%s/notes/%s"
+        (string_of_team_path team_path)
+        (string_of_note_id note_id)
+    in
+    let body = Option.map yojson_of_update_note update_note in
+    let++ answer = patch url body token in
+    answer
+
+  let delete_note_in_team token team_path note_id =
+    let url =
+      Format.sprintf "teams/%s/notes/%s"
+        (string_of_team_path team_path)
+        (string_of_note_id note_id)
+    in
+    let++ answer = delete url None token in
+    answer
+end
