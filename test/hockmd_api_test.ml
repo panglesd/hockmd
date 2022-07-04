@@ -1,7 +1,7 @@
 (* open Alcotest *)
 
 (* let test_hello_with_name name () = *)
-(*   let greeting = Hackmd_api.greet name in *)
+(*   let greeting = Hockmd_api.greet name in *)
 (*   let expected = "Hello " ^ name ^ "!" in *)
 (*   check string "same string" greeting expected *)
 
@@ -11,4 +11,4 @@
 (*   ] *)
 
 (* let () = *)
-(*   Alcotest.run "hackmd-api" [ "Hackmd_api", suite ] *)
+(*   Alcotest.run "hockmd-api" [ "Hockmd_api", suite ] *)

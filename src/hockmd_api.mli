@@ -121,11 +121,11 @@ module V1 : sig
       writePermission : rw_permission;
       commentPermission : comment_permission;
     }
-    (** Type used to create a new note, see {{!Hackmd_api.V1.create_note}
+    (** Type used to create a new note, see {{!Hockmd_api.V1.create_note}
         [create_note]}. *)
 
     type update_note = { content : string; readPermission : rw_permission }
-    (** Type used to update a note, see {{!Hackmd_api.V1.update_note}
+    (** Type used to update a note, see {{!Hockmd_api.V1.update_note}
         [update_note]}. *)
   end
 

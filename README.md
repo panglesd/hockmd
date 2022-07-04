@@ -1,7 +1,5 @@
 # hackmd-api
 
-[![Actions Status](https://github.com/panglesd/hackmd-api/workflows/CI/badge.svg)](https://github.com/panglesd/hackmd-api/actions)
-
 An ocaml library to access the hackmd API.
 
 ## Installation
@@ -9,18 +7,12 @@ An ocaml library to access the hackmd API.
 ### Using Opam
 
 ```bash
-opam install hackmd-api
-```
-
-### Using Esy
-
-```bash
-esy add @opam/hackmd-api
+opam install hockmd-api
 ```
 
 ## Usage
 
-The library is not yet finished.
+Have a look at the [API](https://panglesd.github.io/Ohmd/hackmd-api/Hackmd_api/index.html) of the library.
 
 ## Contributing
 

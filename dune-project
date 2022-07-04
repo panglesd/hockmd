@@ -1,11 +1,11 @@
 (lang dune 2.0)
 
-(name hackmd-api)
+(name hockmd-api)
 
-(documentation "https://panglesd.github.io/hackmd-api/")
+(documentation "https://panglesd.github.io/hockmd-api/")
 
 (source
- (github panglesd/hackmd-api))
+ (github panglesd/hockmd-api))
 
 (license ISC)
 
@@ -16,9 +16,9 @@
 (generate_opam_files true)
 
 (package
- (name hackmd-api)
- (synopsis "A wrapper around hackmd api")
- (description "A wrapper around hackmd api")
+ (name hockmd-api)
+ (synopsis "A library to access hackmd's api")
+ (description "A library to access hackmd's api")
  (depends
   (ocaml
    (>= 4.08.0))
