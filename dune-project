@@ -2,12 +2,12 @@
 
 (name hockmd)
 
-(documentation "https://panglesd.github.io/hockmd-api/")
+(documentation "https://panglesd.github.io/hockmd/")
 
 (source
  (github panglesd/hockmd))
 
-(license ISC)
+(license MIT)
 
 (authors "Paul-Elliot Anglès d'Auriac <peada@free.fr>")
 
@@ -22,10 +22,12 @@
  (depends
   (ocaml
    (>= 4.08.0))
-  dune
+  (dune
+   (>= 2.0))
   cohttp
   cohttp-lwt-unix
-  lwt
+  (lwt
+   (>= 5.3.0))
   ppx_deriving
   yojson
   ppx_yojson_conv
