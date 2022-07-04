@@ -1,11 +1,11 @@
 (lang dune 2.0)
 
-(name hockmd-api)
+(name hockmd)
 
 (documentation "https://panglesd.github.io/hockmd-api/")
 
 (source
- (github panglesd/hockmd-api))
+ (github panglesd/hockmd))
 
 (license ISC)
 
@@ -16,7 +16,7 @@
 (generate_opam_files true)
 
 (package
- (name hockmd-api)
+ (name hockmd)
  (synopsis "A library to access hackmd's api")
  (description "A library to access hackmd's api")
  (depends
