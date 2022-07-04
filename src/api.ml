@@ -12,12 +12,12 @@ module V1 = struct
 
   let token_of_string = Fun.id
 
-  let get url token =
+  let get ?(api_url = "https://api.hackmd.io/v1/") url token =
     let headers =
       Header.init () |> fun header ->
       Header.add header "Authorization" @@ "Bearer " ^ token
     in
-    let uri = Uri.of_string ("https://api.hackmd.io/v1/" ^ url) in
+    let uri = Uri.of_string (api_url ^ url) in
     Client.get ~headers uri >>= fun (resp, body) ->
     let code = resp |> Response.status |> Code.code_of_status in
     if code != 200 then Lwt.return @@ Error (resp, body)
@@ -32,14 +32,15 @@ module V1 = struct
         ?chunked:bool ->
         ?headers:Header.t ->
         'a ->
-        'b) g expected_code url body token =
+        'b) g expected_code ?(api_url = "https://api.hackmd.io/v1/") url body
+      token =
     let headers =
       let add a b h = Header.add h a b in
       Header.init ()
       |> add "Authorization" @@ "Bearer " ^ token
       |> add "Content-Type" "application/json"
     in
-    let uri = Uri.of_string ("https://api.hackmd.io/v1/" ^ url) in
+    let uri = Uri.of_string (api_url ^ url) in
     let body =
       let ( >>| ) a b = Option.map b a in
       body >>| Yojson.Safe.to_string >>| Cohttp_lwt.Body.of_string
@@ -53,70 +54,74 @@ module V1 = struct
   let patch = update Client.patch Fun.id 202
   let delete = update Client.delete Fun.id 204
 
-  let user token =
-    let++ body = get "me" token in
+  let user ?(api_url = "https://api.hackmd.io/v1/") token =
+    let++ body = get ~api_url "me" token in
     user_of_yojson body
 
-  let notes token =
-    let++ body = get "notes" token in
+  let notes ?(api_url = "https://api.hackmd.io/v1/") token =
+    let++ body = get ~api_url "notes" token in
     body |> Yojson.Safe.Util.to_list |> List.map note_summary_of_yojson
 
-  let note token note_id =
+  let note ?(api_url = "https://api.hackmd.io/v1/") token note_id =
     let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
-    let++ body = get url token in
+    let++ body = get ~api_url url token in
     note_of_yojson body
 
-  let teams token =
-    let++ body = get "teams" token in
+  let teams ?(api_url = "https://api.hackmd.io/v1/") token =
+    let++ body = get ~api_url "teams" token in
     body |> Yojson.Safe.Util.to_list |> List.map team_of_yojson
 
-  let team_notes token team_path =
+  let team_notes ?(api_url = "https://api.hackmd.io/v1/") token team_path =
     let url = Format.sprintf "teams/%s/notes" (string_of_team_path team_path) in
-    let++ body = get url token in
+    let++ body = get ~api_url url token in
     body |> Yojson.Safe.Util.to_list |> List.map note_of_yojson
 
-  let create_note token new_note =
+  let create_note ?(api_url = "https://api.hackmd.io/v1/") token new_note =
     let body = Option.map yojson_of_new_note new_note in
-    let++ answer = post "notes" body token in
+    let++ answer = post ~api_url "notes" body token in
     note_of_yojson answer
 
-  let update_note token note_id update_note =
+  let update_note ?(api_url = "https://api.hackmd.io/v1/") token note_id
+      update_note =
     let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
     let body = Option.map yojson_of_update_note update_note in
-    let++ answer = patch url body token in
+    let++ answer = patch ~api_url url body token in
     answer
 
-  let delete_note token note_id =
+  let delete_note ?(api_url = "https://api.hackmd.io/v1/") token note_id =
     let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
-    let++ answer = delete url None token in
+    let++ answer = delete ~api_url url None token in
     answer
 
-  let history token =
-    let++ body = get "history" token in
+  let history ?(api_url = "https://api.hackmd.io/v1/") token =
+    let++ body = get ~api_url "history" token in
     body |> Yojson.Safe.Util.to_list |> List.map note_summary_of_yojson
 
-  let create_note_in_team token team_path new_note =
+  let create_note_in_team ?(api_url = "https://api.hackmd.io/v1/") token
+      team_path new_note =
     let url = Format.sprintf "teams/%s/notes" (string_of_team_path team_path) in
     let body = Option.map yojson_of_new_note new_note in
-    let++ answer = post url body token in
+    let++ answer = post ~api_url url body token in
     note_of_yojson answer
 
-  let update_note_in_team token team_path note_id update_note =
+  let update_note_in_team ?(api_url = "https://api.hackmd.io/v1/") token
+      team_path note_id update_note =
     let url =
       Format.sprintf "teams/%s/notes/%s"
         (string_of_team_path team_path)
         (string_of_note_id note_id)
     in
     let body = Option.map yojson_of_update_note update_note in
-    let++ answer = patch url body token in
+    let++ answer = patch ~api_url url body token in
     answer
 
-  let delete_note_in_team token team_path note_id =
+  let delete_note_in_team ?(api_url = "https://api.hackmd.io/v1/") token
+      team_path note_id =
     let url =
       Format.sprintf "teams/%s/notes/%s"
         (string_of_team_path team_path)
         (string_of_note_id note_id)
     in
-    let++ answer = delete url None token in
+    let++ answer = delete ~api_url url None token in
     answer
 end

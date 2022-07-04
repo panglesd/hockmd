@@ -139,44 +139,61 @@ module V1 : sig
       {{:https://hackmd.io\@hackmd-api/developer-portal/https%3A%2F%2Fhackmd.io%2F%40hackmd-api%2Fhow-to-issue-an-api-token}
       here}, to authenticate yourself. *)
 
-  val user : token -> (user, error) result Lwt.t
+  (** In all what follows, [api_url] is the url of the [api] server, which
+      defaults to [https://api.hackmd.io]. *)
+
+  val user : ?api_url:string -> token -> (user, error) result Lwt.t
   (** To get the information on the user associated with the [token] *)
 
-  val note : token -> note_id -> (note, error) result Lwt.t
+  val note : ?api_url:string -> token -> note_id -> (note, error) result Lwt.t
   (** To get the information on the note of id [note_id]. *)
 
-  val notes : token -> (note_summary list, error) result Lwt.t
+  val notes :
+    ?api_url:string -> token -> (note_summary list, error) result Lwt.t
   (** To get the list of notes of the user corresponding to [token]. Note that
       the notes won't include their content, as they are given as
       {!Types.note_summary}. *)
 
-  val teams : token -> (team list, error) result Lwt.t
+  val teams : ?api_url:string -> token -> (team list, error) result Lwt.t
   (** To get the list of the teams of the user corresponding to [token]. *)
 
-  val team_notes : token -> team_path -> (note list, error) result Lwt.t
+  val team_notes :
+    ?api_url:string -> token -> team_path -> (note list, error) result Lwt.t
   (** To get the list notes of the teams of the user corresponding to [token]. *)
 
-  val create_note : token -> new_note option -> (note, error) result Lwt.t
+  val create_note :
+    ?api_url:string -> token -> new_note option -> (note, error) result Lwt.t
   (** To create a note. If [None] is provided, an empty note is created. *)
 
   val update_note :
-    token -> note_id -> update_note option -> (string, error) result Lwt.t
+    ?api_url:string ->
+    token ->
+    note_id ->
+    update_note option ->
+    (string, error) result Lwt.t
   (** To update a note. If [None] is provided, consult the
       {{:https://hackmd.io\@hackmd-api/developer-portal} API} as I am not sure
       what it does. *)
 
-  val delete_note : token -> note_id -> (string, error) result Lwt.t
+  val delete_note :
+    ?api_url:string -> token -> note_id -> (string, error) result Lwt.t
   (** To delete a note. *)
 
-  val history : token -> (note_summary list, error) result Lwt.t
+  val history :
+    ?api_url:string -> token -> (note_summary list, error) result Lwt.t
   (** To get the history of read notes. *)
 
   val create_note_in_team :
-    token -> team_path -> new_note option -> (note, error) result Lwt.t
+    ?api_url:string ->
+    token ->
+    team_path ->
+    new_note option ->
+    (note, error) result Lwt.t
   (** To create a note in a team workspace. If [None] is provided, an empty note
       is created. *)
 
   val update_note_in_team :
+    ?api_url:string ->
     token ->
     team_path ->
     note_id ->
@@ -186,6 +203,10 @@ module V1 : sig
       {{:https://hackmd.io\@hackmd-api/developer-portal} official API} *)
 
   val delete_note_in_team :
-    token -> team_path -> note_id -> (string, error) result Lwt.t
+    ?api_url:string ->
+    token ->
+    team_path ->
+    note_id ->
+    (string, error) result Lwt.t
   (** To delete a note in a team workspace. *)
 end
