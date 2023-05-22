@@ -10,7 +10,8 @@ module V1 = struct
   type token = string
   type error = [ `Msg of string ]
 
-  let error_of_request _resp _code _body = `Msg "fucked!"
+  let error_of_request _resp _code body =
+(ignore(Cohttp_lwt.Body.to_string body >|= fun s -> failwith s));`Msg ("fucked!: ")
   let token_of_string = Fun.id
   let default_api_url = "https://api.hackmd.io/v1/"
 
