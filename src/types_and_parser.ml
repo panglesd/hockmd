@@ -72,6 +72,7 @@ module V1 = struct
     publishType : publish_type;
     publishedAt : int option;
     permalink : string option;
+    publishLink : string;
     shortId : string;
     lastChangedAt : int;
     lastChangeUser : change_user option;
@@ -90,6 +91,7 @@ module V1 = struct
     publishType : publish_type;
     publishedAt : int option;
     permalink : string option;
+    publishLink : string;
     shortId : string;
     content : string;
     lastChangedAt : int;

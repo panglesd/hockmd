@@ -1,5 +1,5 @@
 module V1 : sig
-  type user_id [@@deriving show, yojson]
+  type user_id = string [@@deriving show, yojson]
   type team_id [@@deriving show, yojson]
   type user_path [@@deriving show, yojson]
   type team_path [@@deriving show, yojson]
@@ -28,7 +28,7 @@ module V1 : sig
   }
   [@@deriving show, yojson]
 
-  type note_id [@@deriving show, yojson]
+  type note_id = string [@@deriving show, yojson]
 
   val string_of_note_id : note_id -> string
 
@@ -59,6 +59,7 @@ module V1 : sig
     publishType : publish_type;
     publishedAt : int option;
     permalink : string option;
+    publishLink : string;
     shortId : string;
     lastChangedAt : int;
     lastChangeUser : change_user option;
@@ -77,6 +78,7 @@ module V1 : sig
     publishType : publish_type;
     publishedAt : int option;
     permalink : string option;
+    publishLink : string;
     shortId : string;
     content : string;
     lastChangedAt : int;

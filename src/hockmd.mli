@@ -11,12 +11,12 @@ module V1 : sig
       not optional. So, until a solid testing has been done, the API will be
       subject to changes.
 
-      The module {!Types} contains all types, bith for requests and responses.
+      The module {!Types} contains all types, both for requests and responses.
 
       Other values of this module straightforwardly corresponds to a method of
       the protocol. *)
   module Types : sig
-    type user_id
+    type user_id = string
     (** Type for the users id *)
 
     type team_id
@@ -50,7 +50,7 @@ module V1 : sig
     }
     (** The type for users *)
 
-    type note_id
+    type note_id = string
 
     type publish_type = string
     (** How the published document open, for instance ["view"]. Will change
@@ -84,6 +84,7 @@ module V1 : sig
       publishType : publish_type;
       publishedAt : int option;
       permalink : string option;
+      publishLink : string;
       shortId : string;
       lastChangedAt : int;
       lastChangeUser : change_user option;
@@ -103,6 +104,7 @@ module V1 : sig
       publishType : publish_type;
       publishedAt : int option;
       permalink : string option;
+      publishLink : string;
       shortId : string;
       content : string;
       lastChangedAt : int;
@@ -132,7 +134,7 @@ module V1 : sig
   open Types
 
   type token
-  type error = Cohttp_lwt_unix.Response.t * Cohttp_lwt.Body.t
+  type error = [ `Msg of string ]
 
   val token_of_string : string -> token
   (** A token, generated as explained

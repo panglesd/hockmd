@@ -4,7 +4,7 @@ open Types_and_parser.V1
 
 module V1 : sig
   type token
-  type error = Cohttp_lwt_unix.Response.t * Cohttp_lwt.Body.t
+  type error = [ `Msg of string ]
 
   val token_of_string : string -> token
   val user : ?api_url:string -> token -> (user, error) result Lwt.t
