@@ -47,7 +47,7 @@ module V1 = struct
       let ( >>| ) a b = Option.map b a in
       body >>| Yojson.Safe.to_string >>| Cohttp_lwt.Body.of_string
     in
-    f ?body ~headers uri >>= fun (resp, body) ->
+    f ?body ~chunked:false ~headers uri >>= fun (resp, body) ->
     let code = resp |> Response.status |> Code.code_of_status in
     if code != expected_code then
       Lwt.return @@ Error (error_of_request resp code body)
