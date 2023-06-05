@@ -49,7 +49,9 @@ module V1 = struct
     let uri = Uri.of_string (api_url ^ url) in
     let body =
       let ( >>| ) a b = Option.map b a in
-      body >>| Yojson.Safe.to_string >>| Cohttp_lwt.Body.of_string
+      body >>| Yojson.Safe.to_string
+      >>| (fun x -> x ^ "\n")
+      >>| Cohttp_lwt.Body.of_string
     in
     f ?body ~chunked:false ~headers uri >>= fun (resp, body) ->
     let code = resp |> Response.status |> Code.code_of_status in
