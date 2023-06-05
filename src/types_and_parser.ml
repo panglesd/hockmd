@@ -112,6 +112,9 @@ module V1 = struct
   }
   [@@deriving show, yojson]
 
-  type update_note = { content : string; readPermission : rw_permission option }
+  type update_note = {
+    content : string;
+    readPermission : rw_permission option; [@yojson.option]
+  }
   [@@deriving show, yojson]
 end

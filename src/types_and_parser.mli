@@ -99,6 +99,9 @@ module V1 : sig
   }
   [@@deriving show, yojson]
 
-  type update_note = { content : string; readPermission : rw_permission option }
+  type update_note = {
+    content : string;
+    readPermission : rw_permission option; [@yojson.option]
+  }
   [@@deriving show, yojson]
 end
