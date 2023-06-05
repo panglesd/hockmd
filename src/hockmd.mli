@@ -126,7 +126,10 @@ module V1 : sig
     (** Type used to create a new note, see {{!Hockmd_api.V1.create_note}
         [create_note]}. *)
 
-    type update_note = { content : string; readPermission : rw_permission }
+    type update_note = {
+      content : string;
+      readPermission : rw_permission option;
+    }
     (** Type used to update a note, see {{!Hockmd_api.V1.update_note}
         [update_note]}. *)
   end
