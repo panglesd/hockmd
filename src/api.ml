@@ -11,7 +11,9 @@ module V1 = struct
   type error = [ `Msg of string ]
 
   let error_of_request _resp _code body =
-(ignore(Cohttp_lwt.Body.to_string body >|= fun s -> failwith s));`Msg ("fucked!: ")
+    ignore (Cohttp_lwt.Body.to_string body >|= fun s -> failwith s);
+    `Msg "fucked!: "
+
   let token_of_string = Fun.id
   let default_api_url = "https://api.hackmd.io/v1/"
 
@@ -41,6 +43,8 @@ module V1 = struct
       Header.init ()
       |> add "Authorization" @@ "Bearer " ^ token
       |> add "Content-Type" "application/json"
+      |> add "Accept" "application/json, text/plain, */*"
+      |> add "Connection" "closed"
     in
     let uri = Uri.of_string (api_url ^ url) in
     let body =
