@@ -95,15 +95,19 @@ module V1 = struct
   let update_note ?api_url token note_id update_note =
     let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
     let body = Option.map yojson_of_update_note update_note in
-    let rec doit () =
-      let** answer = patch ?api_url url body token in
-      match update_note with
-      | None -> Lwt.return_ok answer
-      | Some { content; _ } ->
+    match update_note with
+    | None -> patch ?api_url url body token
+    | Some { content; _ } ->
+        let rec doit old_content =
+          let** answer = patch ?api_url url body token in
           let** note = note ?api_url token note_id in
-          if note.content = content then Lwt.return_ok answer else doit ()
-    in
-    doit ()
+          if note.content = content then Lwt.return_ok answer
+          else if Some note.content = old_content then
+            Lwt.return_error
+              (`Msg "Updating note reached a different stable point")
+          else doit (Some note.content)
+        in
+        doit None
 
   let delete_note ?api_url token note_id =
     let url = Format.sprintf "notes/%s" (string_of_note_id note_id) in
