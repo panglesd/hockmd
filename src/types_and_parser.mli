@@ -55,18 +55,20 @@ module V1 : sig
     id : note_id;
     title : string;
     tags : string list;
-    createdAt : int;
+    createdAt : int option;
     publishType : publish_type;
     publishedAt : int option;
     permalink : string option;
     publishLink : string;
     shortId : string;
-    lastChangedAt : int;
+    lastChangedAt : int option;
     lastChangeUser : change_user option;
     userPath : user_path;
     teamPath : team_path option;
     readPermission : rw_permission;
     writePermission : rw_permission;
+    titleUpdatedAt : int option;
+    tagsUpdatedAt : int option;
   }
   [@@deriving show, yojson]
 
@@ -87,6 +89,8 @@ module V1 : sig
     teamPath : team_path option;
     readPermission : rw_permission;
     writePermission : rw_permission;
+    titleUpdatedAt : int option;
+    tagsUpdatedAt : int option;
   }
   [@@deriving show, yojson]
 

@@ -16,7 +16,7 @@ module V1 = struct
     visibility : string;
     createdAt : int;
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 
   type user = {
     id : user_id;
@@ -26,7 +26,7 @@ module V1 = struct
     photo : string;
     teams : team list;
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 
   type note_id = string [@@deriving show, yojson]
 
@@ -62,26 +62,28 @@ module V1 = struct
     biography : string option;
     userPath : user_path;
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 
   type note_summary = {
     id : note_id;
     title : string;
     tags : string list;
-    createdAt : int;
+    createdAt : int option;
     publishType : publish_type;
     publishedAt : int option;
     permalink : string option;
     publishLink : string;
     shortId : string;
-    lastChangedAt : int;
+    lastChangedAt : int option;
     lastChangeUser : change_user option;
     userPath : user_path;
     teamPath : team_path option;
     readPermission : rw_permission;
     writePermission : rw_permission;
+    titleUpdatedAt : int option;
+    tagsUpdatedAt : int option;
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 
   type note = {
     id : note_id;
@@ -100,8 +102,10 @@ module V1 = struct
     teamPath : team_path option;
     readPermission : rw_permission;
     writePermission : rw_permission;
+    titleUpdatedAt : int option;
+    tagsUpdatedAt : int option;
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 
   type new_note = {
     title : string;
@@ -110,11 +114,11 @@ module V1 = struct
     writePermission : rw_permission;
     commentPermission : comment_permission;
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 
   type update_note = {
     content : string;
     readPermission : rw_permission option; [@yojson.option]
   }
-  [@@deriving show, yojson]
+  [@@deriving show, yojson] [@@yojson.allow_extra_fields]
 end
