@@ -10,9 +10,13 @@ module V1 = struct
   type token = string
   type error = [ `Msg of string ]
 
-  let error_of_request _resp _code body =
-    ignore (Cohttp_lwt.Body.to_string body >|= fun s -> failwith s);
-    `Msg "fucked!: "
+  let error_of_request resp code body =
+    Cohttp_lwt.Body.to_string body >|= fun s ->
+    Error
+      (`Msg
+        (Format.asprintf "code: %d,\n response: %a,\n body: %s\n" code
+           Cohttp_lwt.Response.pp_hum resp s))
+  (* `Msg "fucked!: " *)
 
   let token_of_string = Fun.id
   let default_api_url = "https://api.hackmd.io/v1/"
@@ -25,7 +29,7 @@ module V1 = struct
     let uri = Uri.of_string (api_url ^ url) in
     Client.get ~headers uri >>= fun (resp, body) ->
     let code = resp |> Response.status |> Code.code_of_status in
-    if code != 200 then Lwt.return @@ Error (error_of_request resp code body)
+    if code != 200 then error_of_request resp code body
     else
       body |> Cohttp_lwt.Body.to_string >|= Yojson.Safe.from_string
       >|= Result.ok
@@ -55,8 +59,7 @@ module V1 = struct
     in
     f ?body ~chunked:false ~headers uri >>= fun (resp, body) ->
     let code = resp |> Response.status |> Code.code_of_status in
-    if code != expected_code then
-      Lwt.return @@ Error (error_of_request resp code body)
+    if code != expected_code then error_of_request resp code body
     else body |> Cohttp_lwt.Body.to_string >|= g >|= Result.ok
 
   let post = update Client.post Yojson.Safe.from_string 201
