@@ -1,5 +1,6 @@
 (tests
  (names hockmd_api_test)
  (package hockmd)
- (libraries alcotest ; hackmd_api
-))
+ (libraries
+  alcotest ; hackmd_api
+  ))

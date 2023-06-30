@@ -1,6 +1,6 @@
 (library
  (name hockmd)
  (public_name hockmd)
- (preprocess (pps ppx_deriving.show ppx_yojson_conv))
+ (preprocess
+  (pps ppx_deriving.show ppx_yojson_conv))
  (libraries yojson cohttp cohttp-lwt-unix lwt))
-
