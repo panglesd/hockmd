@@ -1,3 +1,5 @@
+open Ppx_yojson_conv_lib.Yojson_conv.Primitives
+
 module V1 = struct
   type user_id = string [@@deriving show, yojson]
   type team_id = string [@@deriving show, yojson]
